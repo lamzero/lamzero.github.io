@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="一个使用linux(raspberry、arch、dibian)的医生。#站描述"><title>raspberry配置 | lamzero's home</title><link rel="stylesheet" type="text/css" href="//fonts.css.network/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">raspberry配置</h1><a id="logo" href="/.">lamzero's home</a><p class="description">一个使用linux(raspberry、arch、dibian)的医生。</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索..."></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">raspberry配置</h1><div class="post-meta"><span class="date">Jun 22, 2017</span></div><div class="post-content"><h1 id="基本软件安装"><a href="#基本软件安装" class="headerlink" title="基本软件安装"></a>基本软件安装</h1><p>apt install screenfetch nload vnstat htop iotop deluge deluged deluge-web  samba  minidlna  ttf-wqy-zenhei  scim-pinyin  mplayer tightvncserver   </p>
+<h1 id="系统升级"><a href="#系统升级" class="headerlink" title="系统升级"></a>系统升级</h1><p>sudo apt-get update<br>sudo apt-get upgrade<br>sudo apt-get dist-upgrade -y</p>
+<h1 id="LAMP或LNMP的安装及卸载"><a href="#LAMP或LNMP的安装及卸载" class="headerlink" title="LAMP或LNMP的安装及卸载"></a>LAMP或LNMP的安装及卸载</h1><p>sudo apt-get install apache2 mysql-server mysql-client php5 php5-gd php5-mysql php5 libapache2-mod-php5 php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-xcache phpmyadmin</p>
+<p>sudo apt-get remove –purge apache2 apache2-mpm-prefork apache2-utils apache2.2-common libapache2-mod-php5 libapr1 libaprutil1 libdbd-mysql-perl libdbi-perl libmysqlclient15off libnet-daemon-perl libplrpc-perl libpq5 mysql-client-5.0 mysql-common mysql-server mysql-server-5.0 php5-common php5-mysql</p>
+<p>sudo rm -rf /etc/php5</p>
+<p>sudo apt-get autoremove mysql-server </p>
+<p>sudo apt-get remove mysql-common (非常重要)</p>
+<p>sudo apt-get install nginx php5-mysql mysql-server mysql-client php5-fpm l php5 php5-cli</p>
+<h1 id="移动硬盘的开机挂载"><a href="#移动硬盘的开机挂载" class="headerlink" title="移动硬盘的开机挂载"></a>移动硬盘的开机挂载</h1><p>apt-get install ntfs-3g</p>
+<p>mkdir /usb</p>
+<pre><code class="bash">UUID=<span class="string">"********"</span>  /usb        ntfs-3g     defaults,permissions,nofail          0       0
+UUID=<span class="string">"********"</span>  /usb        ext4     defaults,nofail          0       0
+</code></pre>
+<h1 id="samba及minidlna的配置文件"><a href="#samba及minidlna的配置文件" class="headerlink" title="samba及minidlna的配置文件"></a>samba及minidlna的配置文件</h1><p>[share]<br>        path = /usb/<br>        valid users = lamzero<br>        browseable = yes<br>        public = yes<br>        writable = yes</p>
+<p>friendly_name=DLNA<br>media_dir=A,/usb/Music<br>media_dir=P,/usb/Picture<br>media_dir=V,/usb/Video<br>db_dir=/usb/db<br>log_dir=/usb/log</p>
+<h1 id="好像是没用的yeelink配置"><a href="#好像是没用的yeelink配置" class="headerlink" title="好像是没用的yeelink配置"></a>好像是没用的yeelink配置</h1><pre><code class="bash"><span class="meta">#!/bin/bash</span>
+<span class="comment"># /etc/init.d/yeelink.service</span>
+
+<span class="comment">### BEGIN INIT INFO</span>
+<span class="comment"># Provides: embbnux</span>
+<span class="comment"># Required-Start: $remote_fs $syslog</span>
+<span class="comment"># Required-Stop: $remote_fs $syslog</span>
+<span class="comment"># Default-Start: 2 3 4 5</span>
+<span class="comment"># Default-Stop: 0 1 6</span>
+<span class="comment"># Short-Description: yeelink initscript</span>
+<span class="comment"># Description: This service is used to manage a led</span>
+<span class="comment">### END INIT INFO</span>
+RETVAL=0
+<span class="function"><span class="title">start</span></span>(){
+<span class="built_in">echo</span> -n <span class="string">"mystart serive ..."</span>
+<span class="built_in">cd</span> /home/pi
+su pi -c <span class="string">"python /home/pi/yeelink.py"</span>
+}
+<span class="function"><span class="title">stop</span></span>(){ 
+　　<span class="built_in">echo</span> <span class="string">"mystart service is stoped..."</span> 
+} 
+<span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span>
+start) 
+start 
+;; 
+stop) 
+stop 
+;; 
+<span class="keyword">esac</span> 
+<span class="built_in">exit</span> <span class="variable">$RETVAL</span>
+</code></pre>
+<p>[Desktop Entry]<br>Name=yeelink<br>Comment=My Python Program<br>Exec=python /home/pi/yeelink.py<br>Terminal=false<br>MultipleArgs=false<br>Type=Application<br>Categories=Application;Development;<br>StartupNotify=true</p>
+<h1 id="tightvncserver的配置过程及配置文件"><a href="#tightvncserver的配置过程及配置文件" class="headerlink" title="tightvncserver的配置过程及配置文件"></a>tightvncserver的配置过程及配置文件</h1><p>sudo nano /etc/init.d/tightvncserver</p>
+<pre><code class="bash"><span class="meta">#!/bin/sh</span>
+<span class="comment">### BEGIN INIT INFO</span>
+<span class="comment"># Provides:          tightvncserver</span>
+<span class="comment"># Required-Start:    $local_fs</span>
+<span class="comment"># Required-Stop:     $local_fs</span>
+<span class="comment"># Default-Start:     2 3 4 5</span>
+<span class="comment"># Default-Stop:      0 1 6</span>
+<span class="comment"># Short-Description: Start/stop tightvncserver</span>
+<span class="comment">### END INIT INFO</span>
+
+<span class="comment"># More details see:</span>
+<span class="comment"># http://www.penguintutor.com/linux/tightvnc</span>
+
+<span class="comment">### Customize this entry</span>
+<span class="comment"># Set the USER variable to the name of the user to start tightvncserver under</span>
+<span class="built_in">export</span> USER=<span class="string">'root'</span>
+<span class="comment">### End customization required</span>
+
+<span class="built_in">eval</span> <span class="built_in">cd</span> ~root
+
+<span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>
+  start)
+    <span class="comment"># 启动命令行。此处自定义分辨率、控制台号码或其它参数。</span>
+    su root -c <span class="string">'/usr/bin/tightvncserver -depth 16 -geometry 800x600 :1'</span>
+    <span class="built_in">echo</span> <span class="string">"Starting TightVNC server for <span class="variable">$USER</span> "</span>
+    ;;
+  stop)
+    <span class="comment"># 终止命令行。此处控制台号码与启动一致。</span>
+    su root -c <span class="string">'/usr/bin/tightvncserver -kill :1'</span>
+    <span class="built_in">echo</span> <span class="string">"Tightvncserver stopped"</span>
+    ;;
+  *)
+    <span class="built_in">echo</span> <span class="string">"Usage: /etc/init.d/tightvncserver {start|stop}"</span>
+    <span class="built_in">exit</span> 1
+    ;;
+<span class="keyword">esac</span>
+<span class="built_in">exit</span> 0
+``` bash
+sudo chmod 755 /etc/init.d/tightvncserver
+sudo update-rc.d tightvncserver defaults
+
+
+<span class="comment"># aria2 的配置过程及配置文件</span>
+``` bash
+<span class="meta">#!/bin/sh</span>
+<span class="comment">### BEGIN INIT INFO</span>
+<span class="comment"># Provides:          aria2</span>
+<span class="comment"># Required-Start:    $remote_fs $network</span>
+<span class="comment"># Required-Stop:     $remote_fs $network</span>
+<span class="comment"># Default-Start:     2 3 4 5</span>
+<span class="comment"># Default-Stop:      0 1 6</span>
+<span class="comment"># Short-Description: Aria2 Downloader</span>
+<span class="comment">### END INIT INFO</span>
+
+USER=pi
+CONF=/mnt/usb/.aria2/aria2.conf
+
+<span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span>
+start)
+    <span class="built_in">echo</span> <span class="string">"Start aria2c"</span>
+    <span class="built_in">umask</span> 0002
+    su - <span class="variable">$USER</span> -c <span class="string">"aria2c --conf-path=<span class="variable">$CONF</span> -D"</span>
+    ;;
+stop)
+    <span class="built_in">echo</span> <span class="string">"Stopping aria2c, please wait..."</span>
+    killall -w aria2c
+    ;;
+restart)
+    <span class="built_in">echo</span> <span class="string">"Stopping aria2c, please wait..."</span>
+    killall -w aria2c
+    <span class="built_in">echo</span> <span class="string">"Start aria2c"</span>
+    <span class="built_in">umask</span> 0002
+    su - <span class="variable">$USER</span> -c <span class="string">"aria2c --conf-path=<span class="variable">$CONF</span> -D"</span>
+    ;;
+*)
+    <span class="built_in">echo</span> <span class="string">"<span class="variable">$0</span> {start|stop|restart|status}"</span>
+    ;;
+<span class="keyword">esac</span>
+<span class="built_in">exit</span>
+</code></pre>
+<pre><code class="bash"><span class="comment">## '#'开头为注释内容, 选项都有相应的注释说明, 根据需要修改 ##</span>
+<span class="comment">## 被注释的选项填写的是默认值, 建议在需要修改时再取消注释  ##</span>
+
+<span class="comment">## 文件保存相关 ##</span>
+
+<span class="comment"># 文件的保存路径(可使用绝对路径或相对路径), 默认: 当前启动位置</span>
+dir=/mnt/usb/aria2
+<span class="comment"># 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M</span>
+disk-cache=32M
+<span class="comment"># 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc</span>
+<span class="comment"># 预分配所需时间: none &lt; falloc ? trunc &lt; prealloc</span>
+<span class="comment"># falloc和trunc则需要文件系统和内核支持</span>
+<span class="comment"># NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项</span>
+file-allocation=falloc
+<span class="comment"># 断点续传</span>
+<span class="built_in">continue</span>=<span class="literal">true</span>
+
+<span class="comment">## 下载连接相关 ##</span>
+
+<span class="comment"># 最大同时下载任务数, 运行时可修改, 默认:5</span>
+max-concurrent-downloads=10
+<span class="comment"># 同一服务器连接数, 添加时可指定, 默认:1</span>
+max-connection-per-server=10
+<span class="comment"># 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M</span>
+<span class="comment"># 假定size=10M, 文件为20MiB 则使用两个来源下载; 文件为15MiB 则使用一个来源下载</span>
+min-split-size=10M
+<span class="comment"># 单个任务最大线程数, 添加时可指定, 默认:5</span>
+split=5
+<span class="comment"># 整体下载速度限制, 运行时可修改, 默认:0</span>
+<span class="comment">#max-overall-download-limit=0</span>
+<span class="comment"># 单个任务下载速度限制, 默认:0</span>
+<span class="comment">#max-download-limit=0</span>
+<span class="comment"># 整体上传速度限制, 运行时可修改, 默认:0</span>
+<span class="comment">#max-overall-upload-limit=0</span>
+<span class="comment"># 单个任务上传速度限制, 默认:0</span>
+<span class="comment">#max-upload-limit=0</span>
+<span class="comment"># 禁用IPv6, 默认:false</span>
+<span class="built_in">disable</span>-ipv6=<span class="literal">true</span>
+
+<span class="comment">## 进度保存相关 ##</span>
+
+<span class="comment"># 从会话文件中读取下载任务</span>
+input-file=/etc/aria2/aria2.session
+<span class="comment"># 在Aria2退出时保存`错误/未完成`的下载任务到会话文件</span>
+save-session=/etc/aria2/aria2.session
+<span class="comment"># 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0</span>
+<span class="comment">#save-session-interval=0</span>
+
+<span class="comment">## RPC相关设置 ##</span>
+
+<span class="comment"># 启用RPC, 默认:false</span>
+<span class="built_in">enable</span>-rpc=<span class="literal">true</span>
+<span class="comment"># 允许所有来源, 默认:false</span>
+rpc-allow-origin-all=<span class="literal">true</span>
+<span class="comment"># 允许非外部访问, 默认:false</span>
+rpc-listen-all=<span class="literal">true</span>
+<span class="comment"># 事件轮询方式, 取值:[epoll, kqueue, port, poll, select], 不同系统默认值不同</span>
+<span class="comment">#event-poll=select</span>
+<span class="comment"># RPC监听端口, 端口被占用时可以修改, 默认:6800</span>
+rpc-listen-port=6800
+<span class="comment"># 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项</span>
+<span class="comment">#rpc-secret=&lt;TOKEN&gt;</span>
+<span class="comment"># 设置的RPC访问用户名, 此选项新版已废弃, 建议改用 --rpc-secret 选项</span>
+<span class="comment">#rpc-user=&lt;USER&gt;</span>
+<span class="comment"># 设置的RPC访问密码, 此选项新版已废弃, 建议改用 --rpc-secret 选项</span>
+<span class="comment">#rpc-passwd=&lt;PASSWD&gt;</span>
+
+<span class="comment">## BT/PT下载相关 ##</span>
+
+<span class="comment"># 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true</span>
+follow-torrent=<span class="literal">true</span>
+<span class="comment"># BT监听端口, 当端口被屏蔽时使用, 默认:6881-6999</span>
+listen-port=51413
+<span class="comment"># 单个种子最大连接数, 默认:55</span>
+bt-max-peers=55
+<span class="comment"># 打开DHT功能, PT需要禁用, 默认:true</span>
+<span class="built_in">enable</span>-dht=<span class="literal">true</span>
+<span class="comment"># 打开IPv6 DHT功能, PT需要禁用</span>
+<span class="comment">#enable-dht6=false</span>
+<span class="comment"># DHT网络监听端口, 默认:6881-6999</span>
+<span class="comment">#dht-listen-port=6881-6999</span>
+<span class="comment"># 本地节点查找, PT需要禁用, 默认:false</span>
+bt-enable-lpd=<span class="literal">true</span>
+<span class="comment"># 种子交换, PT需要禁用, 默认:true</span>
+<span class="built_in">enable</span>-peer-exchange=<span class="literal">true</span>
+<span class="comment"># 每个种子限速, 对少种的PT很有用, 默认:50K</span>
+<span class="comment">#bt-request-peer-speed-limit=50K</span>
+<span class="comment"># 客户端伪装, PT需要</span>
+<span class="comment">#peer-id-prefix=-TR2770-</span>
+<span class="comment">#user-agent=Transmission/2.77</span>
+<span class="comment"># 当种子的分享率达到这个数时, 自动停止做种, 0为一直做种, 默认:1.0</span>
+seed-ratio=0
+<span class="comment"># 强制保存会话, 话即使任务已经完成, 默认:false</span>
+<span class="comment"># 较新的版本开启后会在任务完成后依然保留.aria2文件</span>
+<span class="comment">#force-save=false</span>
+<span class="comment"># BT校验相关, 默认:true</span>
+<span class="comment">#bt-hash-check-seed=true</span>
+<span class="comment"># 继续之前的BT任务时, 无需再次校验, 默认:false</span>
+bt-seed-unverified=<span class="literal">true</span>
+<span class="comment"># 保存磁力链接元数据为种子文件(.torrent文件), 默认:false</span>
+bt-save-metadata=<span class="literal">true</span>
+</code></pre>
+</div><div class="tags"><a href="/tags/linux/">linux</a><a href="/tags/树莓派/">树莓派</a><a href="/tags/raspberry/">raspberry</a></div><div class="post-share"></div><div class="post-nav"><a href="/2017/06/23/收集几张好看的壁纸/" class="pre">收集几张好看的壁纸(以后慢慢添加)</a><a href="/2017/06/22/lamzero/" class="next">我的VPS初始配置</a></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本软件安装"><span class="toc-text">基本软件安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#系统升级"><span class="toc-text">系统升级</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LAMP或LNMP的安装及卸载"><span class="toc-text">LAMP或LNMP的安装及卸载</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#移动硬盘的开机挂载"><span class="toc-text">移动硬盘的开机挂载</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#samba及minidlna的配置文件"><span class="toc-text">samba及minidlna的配置文件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#好像是没用的yeelink配置"><span class="toc-text">好像是没用的yeelink配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#tightvncserver的配置过程及配置文件"><span class="toc-text">tightvncserver的配置过程及配置文件</span></a></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/23/MRI模板/">MRI平扫正常及常见病例的描述模板</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/29/CT模板/">CT平扫正常及常见病例的描述模板</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/23/呼吸系统/">呼吸系统</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/23/收集几张好看的壁纸/">收集几张好看的壁纸(以后慢慢添加)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/22/raspberry配置/">raspberry配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/22/lamzero/">我的VPS初始配置</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/vps/" style="font-size: 15px;">vps</a> <a href="/tags/壁纸/" style="font-size: 15px;">壁纸</a> <a href="/tags/动漫/" style="font-size: 15px;">动漫</a> <a href="/tags/模板-CT-报告，描述-常见病例-正常病例/" style="font-size: 15px;">模板,CT,报告，描述,常见病例,正常病例</a> <a href="/tags/树莓派/" style="font-size: 15px;">树莓派</a> <a href="/tags/raspberry/" style="font-size: 15px;">raspberry</a> <a href="/tags/模板-MRI-报告-描述-常见病例-正常病例/" style="font-size: 15px;">模板,MRI,报告,描述,常见病例,正常病例</a> <a href="/tags/呼吸系统/" style="font-size: 15px;">呼吸系统</a> <a href="/tags/常见疾病的影像诊断/" style="font-size: 15px;">常见疾病的影像诊断</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">lamzero.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script></body></html>
